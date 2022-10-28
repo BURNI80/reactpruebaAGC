@@ -13,6 +13,7 @@ export default class Incremento extends Component {
         statusPut:false,
         doctores:[],
         statusDoctores:false,
+        especialidad:"",
     }
 
     componentDidMount = () => {
@@ -34,37 +35,20 @@ export default class Incremento extends Component {
 
     incrementar = (e) => {
         e.preventDefault()
-        this.setState({
-            doctores:[],
-            statusDoctores:false,
-        })
         const request = "/api/Doctores/"
         var especialidadSel = this.especialidadSel.current.value
         var incremento = this.incremento.current.value
+        this.setState({
+            especialidad:especialidadSel,
+            statusPut:false,
+
+        })        
 
         axios.put(Global.url+request+especialidadSel+"/"+incremento).then(res => {
 
             this.setState({
                 statusPut:true,
             })
-
-            axios.get(Global.url+request).then(res => {
-                var doctores = res.data
-
-                for(var i = 0;i<doctores.length;i++){
-                    if(doctores[i].especialidad === especialidadSel){
-                        this.state.doctores.push(doctores[i])
-                    }
-                }
-
-
-                this.setState({
-                    doctores:this.state.doctores,
-                    statusDoctores:true,
-                })
-            })
-
-            
         })
     }
 
@@ -91,8 +75,8 @@ export default class Incremento extends Component {
                             </form>
                             <hr />
                             {
-                                (this.state.statusDoctores === true)&&
-                                (<TablaDoctores  doctores={this.state.doctores} />)
+                                (this.state.statusPut === true)&&
+                                (<TablaDoctores  especialidad={this.state.especialidad} />)
                             }
                         </div>
                     )

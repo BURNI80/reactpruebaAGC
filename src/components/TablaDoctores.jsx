@@ -1,21 +1,29 @@
+import axios from 'axios'
 import React, { Component } from 'react'
+import Global from '../global/Global'
 
 export default class TablaDoctores extends Component {
 
-  // componentDidUpdate = (oldProps) => {
-  //   if(oldProps.doctores !== this.props.doctores){
-  //     this.crearTabla()
-  //   }
-  // }
+  state = {
+    doctores: [],
+    statusDoctores: true,
+  }
 
-  // componentDidMount = () => {
-  //   this.crearTabla()
-  // }
+  componentDidMount = () => {
+    this.crearTabla()
+  }
 
-  // crearTabla = () => {
-  //   var doctores = this.props.doctores
-  //   console.log(doctores);
-  // }
+  crearTabla = () => {
+    const request = "/api/Doctores/DoctoresEspecialidad/"
+
+    axios.get(Global.url + request + this.props.especialidad).then(res => {
+      var datos = res.data
+      this.setState({
+        doctores: datos,
+        statusDoctores: true,
+      })
+    })
+  }
 
 
   render() {
@@ -23,28 +31,34 @@ export default class TablaDoctores extends Component {
 
     return (
       <div>
-        <table border="1">
-          <thead>
-            <tr>
-              <th>Apellido</th>
-              <th>Especialidad</th>
-              <th>Salario</th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              this.props.doctores.map((doctor, index) => {
-                return (
-                  <tr key={doctor.idDoctor}>
-                    <td>{doctor.apellido}</td>
-                    <td>{doctor.especialidad}</td>
-                    <td>{doctor.salario}</td>
-                  </tr>
-                )
-              })
-            }
-          </tbody>
-        </table>
+        {
+          (this.state.statusDoctores === true) &&
+          (
+            <table border="1">
+              <thead>
+                <tr>
+                  <th>Apellido</th>
+                  <th>Especialidad</th>
+                  <th>Salario</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  this.state.doctores.map((doctor, index) => {
+                    return (
+                      <tr key={doctor.idDoctor}>
+                        <td>{doctor.apellido}</td>
+                        <td>{doctor.especialidad}</td>
+                        <td>{doctor.salario}</td>
+                      </tr>
+                    )
+                  })
+                }
+              </tbody>
+            </table>
+          )
+        }
+
       </div>
     )
   }
